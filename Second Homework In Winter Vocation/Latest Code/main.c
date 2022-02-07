@@ -10,6 +10,7 @@ void SaveRuleWeiShu(int WeiShu,FILE *file);
 void SaveMinAndMax(int m,FILE *file);
 void SaveCTPAndFlag(int n,FILE *file);
 int Compare(char *PacketIP,char *RuleIP,int WeiShu);
+int CheckAnswer(FILE *MyAnswer,FILE *ReferenceAnswer);
 
 int main()
 {
@@ -36,7 +37,7 @@ int main()
     FILE *RuleCTPFlagFile=fopen("C:/Users/Lenovo/Desktop/Second Homework In Winter Vocation/Debugging Data/RuleCTPFlag.txt","w");
 
     FILE *AnswerFile=fopen("C:/Users/Lenovo/Desktop/Second Homework In Winter Vocation/Answer.txt","w");
-    FILE *TestFile=fopen("C:/Users/Lenovo/Desktop/Second Homework In Winter Vocation/Debugging Data/Test.txt","w");
+    FILE *ReferenceAnswerFile=fopen("C:/Users/Lenovo/Desktop/Second Homework In Winter Vocation/dataset/data/dataset1/ans1.txt","r");
 
     int i,j,PacketDuanKou1,PacketDuanKou2,PacketCTP;
     long long PacketIP1,PacketIP2;
@@ -119,25 +120,25 @@ int main()
             fscanf(RuleWeiShu1File,"%d\n",&WeiShu1);
             if(Compare(PacketIP1Array,RuleIP1Array,WeiShu1))
                 flag1=1;
-            printf("%d: %d:%d",i,j,flag1);//Debug
+            //printf("%d: %d:%d",i,j,flag1);//Debug
 
             fscanf(RuleIP2File,"%s\n",RuleIP2Array);
             fscanf(RuleWeiShu2File,"%d\n",&WeiShu2);
             if(Compare(PacketIP2Array,RuleIP2Array,WeiShu2))
                 flag2=1;
-            printf("%d",flag2);//Debug
+            //printf("%d",flag2);//Debug
 
             fscanf(RuleMin1File,"%d\n",&min1);
             fscanf(RuleMax1File,"%d\n",&max1);
             if(min1<=PacketDuanKou1&&PacketDuanKou1<=max1)
                 flag3=1;
-            printf("%d",flag3);
+            //printf("%d",flag3);//Debug
 
             fscanf(RuleMin2File,"%d\n",&min2);
             fscanf(RuleMax2File,"%d\n",&max2);
             if(min2<=PacketDuanKou2&&PacketDuanKou2<=max2)
                 flag4=1;
-            printf("%d",flag4);//Debug
+            //printf("%d",flag4);//Debug
 
             fscanf(RuleCTPFile,"%d\n",&RuleCTP);
             fscanf(RuleCTPFlagFile,"%d\n",&RuleCTPFlag);
@@ -147,13 +148,19 @@ int main()
                 flag5=1;
             else if(RuleCTPFlag!=0&&RuleCTPFlag!=255)
                 printf("%d: RuleCTPFlag is neither 0 nor 255!\n",j);
-            printf("%d\n",flag5);//Debug
+            //printf("%d\n",flag5);//Debug
 
             if(flag1&&flag2&&flag3&&flag4&&flag5)
             {
                 Flag=1;
                 break;
             }
+
+            flag1=0;
+            flag2=0;
+            flag3=0;
+            flag4=0;
+            flag5=0;
         }
 
         if(Flag==1)
@@ -196,6 +203,8 @@ int main()
         RuleCTPFile=fopen("C:/Users/Lenovo/Desktop/Second Homework In Winter Vocation/Debugging Data/RuleCTP.txt","r");
         RuleCTPFlagFile=fopen("C:/Users/Lenovo/Desktop/Second Homework In Winter Vocation/Debugging Data/RuleCTPFlag.txt","r");
     }
+
+    CheckAnswer(AnswerFile,ReferenceAnswerFile);
 
     return 0;
 }
@@ -339,4 +348,32 @@ int Compare(char *PacketIP,char *RuleIP,int WeiShu)
         RuleIP++;
     }
     return 1;
+}
+
+
+
+int CheckAnswer(FILE *MyAnswerFile,FILE *ReferenceAnswerFile)
+{
+    int i,flag=1,MyAnswer,ReferenceAnswer,ErrorNum=0;
+
+    fclose(MyAnswerFile);
+    MyAnswerFile=fopen("C:/Users/Lenovo/Desktop/Second Homework In Winter Vocation/Answer.txt","r");
+
+    for(i=0;!feof(ReferenceAnswerFile);i++)
+    {
+        fscanf(MyAnswerFile,"%d\n",&MyAnswer);
+        fscanf(ReferenceAnswerFile,"%d\n",&ReferenceAnswer);
+
+        if(MyAnswer!=ReferenceAnswer)
+        {
+            flag=0;
+            printf("No.%d: Error!\n",i);
+            ErrorNum++;
+        }
+    }
+
+    if(flag==1)
+        printf("Completely Correct!!! Congratulation!!!\n");
+    else if(flag==0)
+        printf("There are %d error(s)!\n",ErrorNum);
 }
