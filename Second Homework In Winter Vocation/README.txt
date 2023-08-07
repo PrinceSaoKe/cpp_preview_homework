@@ -1,2 +1,0 @@
-已经把packet1.txt的数据进行处理并进行匹配了，耗时15秒左右，中间数据都是正确的，数据包packet1.txt和规则集rule1.txt已匹配，结果与参考答案ans1.txt完全一致！
-代码在Latest Code文件夹里，Debugging Data中存放的是用代码处理好的过程数据。
